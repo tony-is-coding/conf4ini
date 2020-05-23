@@ -1,5 +1,9 @@
+import os
 from pathlib import PurePath
 from collections import defaultdict
+
+class PathTypeError(Exception):
+    ...
 
 
 class Config(defaultdict):
@@ -23,12 +27,12 @@ class Config(defaultdict):
     default_factory = dict
 
     def read_file(self):
-        try:
-            with open(self.search_path, "r") as f:
-                lines = f.readlines()
-        except FileNotFoundError:
-            raise FileNotFoundError("no settings.ini under the current directory")
-
+        if not os.path.exists(self.search_path):
+            raise FileNotFoundError(" no settings.ini under the current directory")
+        if not os.path.isfile(self.search_path):
+            raise PathTypeError("expect a `file` type path but got a `directory` type path")
+        with open(self.search_path, "r") as f:
+            lines = f.readlines()
         temp_stack = []
 
         for line in lines:  # type:str
