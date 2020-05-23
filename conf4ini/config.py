@@ -27,11 +27,7 @@ class Config(defaultdict):
             with open(self.search_path, "r") as f:
                 lines = f.readlines()
         except FileExistsError:
-            ...
-        except IOError:
-            ...
-        except ValueError:
-            ...
+            raise FileExistsError("no settings.ini under the current directory")
 
         temp_stack = []
 
